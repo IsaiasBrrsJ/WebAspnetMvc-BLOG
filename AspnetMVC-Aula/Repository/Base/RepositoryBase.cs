@@ -22,10 +22,10 @@ namespace WebAspnet_.Repository.Base
             await Context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<TEntity>> GetAll() =>
+        public async Task<IList<TEntity>> GetAll() =>
                await DbSet.ToListAsync();
 
-        public async Task<Entity> GetId(Guid id) =>
+        public async Task<TEntity> GetId(Guid id) =>
             await DbSet.FindAsync(id);
 
         public async Task Remove(Guid id)

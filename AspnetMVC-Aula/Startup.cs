@@ -10,6 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebAspnet_.Models;
+using WebAspnet_.Repository;
+using WebAspnet_.Repository.Base;
+using WebAspnet_.Repository.Interfaces;
 
 namespace WebAspnet_
 {
@@ -30,6 +33,9 @@ namespace WebAspnet_
             {
                 options.UseSqlServer(Configuration.GetConnectionString("BlogDb"));
             });
+            services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IPostRepository, PostRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

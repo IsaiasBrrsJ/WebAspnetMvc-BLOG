@@ -7,8 +7,8 @@ namespace WebAspnet_.Repository.Interfaces
 {
     public interface IRepositoryBase<TEntity> where TEntity : Entity
     {
-        Task<IEnumerable<TEntity>> GetAll();
-        Task<Entity> GetId(Guid id);
+        Task<IList<TEntity>> GetAll();
+        Task<TEntity> GetId(Guid id);
 
         Task AddAsync(TEntity entity);
 
