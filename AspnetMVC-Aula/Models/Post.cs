@@ -21,7 +21,7 @@ namespace WebAspnet_.Models
         {
             Title = title;
             Resume = resume;
-            Content = Content;
+            Content = content;
             Image = image;
             DatePost = DateTime.Now;
         }

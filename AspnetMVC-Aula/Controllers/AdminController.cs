@@ -1,7 +1,5 @@
 using System.IO;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -74,6 +72,7 @@ namespace WebAspnet_.Controllers
         {
             var id = Guid.NewGuid();
             var imageToByte = ConvertToBytes(model.Image);
+            Console.WriteLine(model.Content);
             var newPost = new Post(id, model.Title, model.Resume, model.Content, imageToByte);
 
             await _postRepository.AddAsync(newPost);
@@ -84,6 +83,25 @@ namespace WebAspnet_.Controllers
         {
             var allPosts = await _postRepository.GetAll();
             return View(allPosts);
+        }
+
+        public async Task<IActionResult> UpdatePost(string id, string title, string resume, string content, IFormFile image)
+        {
+            var convertId = Guid.Parse(id);
+            var imageToByte = ConvertToBytes(image);
+            var getPosts = await _postRepository.GetAll();
+            var post = getPosts.Where(p => p.Id == convertId).FirstOrDefault();
+
+            post.Content = content;
+            post.Resume = resume;
+            post.Title = title;
+            if (imageToByte != null)
+                post.Image = imageToByte;
+
+
+            await _postRepository.UpdateAsync(post);
+
+            return RedirectToAction(nameof(AllPost));
         }
         private byte[] ConvertToBytes(IFormFile image)
         {

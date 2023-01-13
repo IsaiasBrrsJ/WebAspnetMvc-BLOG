@@ -3,11 +3,13 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Update Post</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form asp-controller="Admin" asp-action="UpdatePost" enctype="multipart/form-data">
-                    <input name="id" type="text" class="form-control" id="id">
+                    <input style="display:none;" name="Id" type="text" class="form-control" id="id">
                     <div class="mb-3">
                         <label for="Title" class="col-form-label">Title:</label>
                         <input name="Title" type="text" class="form-control" id="title">
