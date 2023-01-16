@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using System.IO;
 using System;
 using System.Linq;
@@ -8,6 +9,8 @@ using Microsoft.Extensions.Logging;
 using WebAspnet_.Models;
 using WebAspnet_.Repository.Interfaces;
 using WebAspnet_.ViewModel;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace WebAspnet_.Controllers
 {
@@ -71,7 +74,7 @@ namespace WebAspnet_.Controllers
         public async Task<IActionResult> SavePost(PostViewModel model)
         {
             var id = Guid.NewGuid();
-            var imageToByte = ConvertToBytes(model.Image);
+            var imageToByte = ResizeImage(model.Image);
             Console.WriteLine(model.Content);
             var newPost = new Post(id, model.Title, model.Resume, model.Content, imageToByte);
 
@@ -85,10 +88,11 @@ namespace WebAspnet_.Controllers
             return View(allPosts);
         }
 
+
         public async Task<IActionResult> UpdatePost(string id, string title, string resume, string content, IFormFile image)
         {
             var convertId = Guid.Parse(id);
-            var imageToByte = ConvertToBytes(image);
+            var imageToByte = ResizeImage(image);
             var getPosts = await _postRepository.GetAll();
             var post = getPosts.Where(p => p.Id == convertId).FirstOrDefault();
 
@@ -103,6 +107,11 @@ namespace WebAspnet_.Controllers
 
             return RedirectToAction(nameof(AllPost));
         }
+        public async Task<IActionResult> DeletePost(PostViewModel post)
+        {
+            await _postRepository.Remove(post.Id);
+            return RedirectToAction(nameof(AllPost));
+        }
         private byte[] ConvertToBytes(IFormFile image)
         {
             if (image == null)
@@ -114,6 +123,21 @@ namespace WebAspnet_.Controllers
                 inputStream.CopyTo(stream);
                 return stream.ToArray();
             }
+        }
+
+        public static byte[] ResizeImage(IFormFile img)
+        {
+            if (img == null)
+                return null;
+
+            var image = Image.Load(img.OpenReadStream());
+            var format = Image.DetectFormat(img.OpenReadStream());
+            image.Mutate(x => x.Resize(357, 227));
+
+            var imageInByte = image.ToBase64String(format).Split(',')[1];
+
+            var imgConvertedToByte = Convert.FromBase64String(imageInByte);
+            return imgConvertedToByte.ToArray();
         }
 
     }

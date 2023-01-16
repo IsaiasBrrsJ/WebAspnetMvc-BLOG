@@ -8,7 +8,6 @@ namespace WebAspnet_.Models
     public class Post : Entity
     {
 
-
         public string Title { get; set; }
         public string Resume { get; set; }
 
